@@ -33,7 +33,7 @@ jobs:
             python3 -m venv venv
             . venv/bin/activate
             pip install -r src/requirements.txt
-
+            
       - save_cache:
           paths:
             - ./venv
@@ -53,3 +53,36 @@ jobs:
       - store_artifacts:
           path: test-reports
           destination: test-reports
+
+  deploy-to-gcp:
+    docker:
+      - iamge: circleci/python:3.6.1
+    steps:
+      - checkout:
+      - attach_workspace:
+          at: .
+      - restore_cache:
+          keys:
+            - cloud-sdk-{{ checksum "src/requirements.txt" }}
+      - run: /bin/bash .circleci/install-and-activate-google-cloud-sdk.sh
+
+      - save_cache:
+          paths:
+            - ~/google-cloud-sdk
+          key: cloud-sdk-{{ checksum "src/requirements.txt" }}
+      - run:
+          name: GCP deploy
+          command: /bin/bash .circleci/gcpdeploy.sh qa
+
+workflows:
+  version: 2
+  Build-Test-Deploy:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only: master
+      - hold:
+          type: approval
+          require: 
+            - deploy-to-gcp

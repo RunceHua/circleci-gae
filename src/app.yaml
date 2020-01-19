@@ -1,1 +1,3 @@
 runtime: python37
+# deploy service name
+service: python-demo

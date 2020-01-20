@@ -56,9 +56,9 @@ jobs:
 
   deploy-to-gcp:
     docker:
-      - iamge: circleci/python:3.6.1
+      - image: circleci/python:3.6.1
     steps:
-      - checkout:
+      - checkout
       - attach_workspace:
           at: .
       - restore_cache:

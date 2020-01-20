@@ -13,6 +13,8 @@ echo $1
 
 echo "begin deploy to gcp"
 
+cd src/
+
 ${GCLOUD} app deploy app-$1.yaml
 
 echo "end deploy to gcp"

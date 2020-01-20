@@ -82,7 +82,6 @@ workflows:
           filters:
             branches:
               only: master
-      - hold:
-          type: approval
-          require: 
-            - deploy-to-gcp
+      - deploy-to-gcp:
+          requires:
+            - build
